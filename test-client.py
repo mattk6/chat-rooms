@@ -25,6 +25,7 @@ def connect():
     # Start thread to send messages to the server (or run in main thread)
     # do we need this?
     process_inputs(client_socket)
+    return
 
 def receive_messages(client_socket):
     # continuously print messages from server
@@ -38,6 +39,7 @@ def receive_messages(client_socket):
         except Exception as e:
             print(f"Error receiving message: {e}")
             break
+    return
 
 def process_inputs(client_socket):
     # continuously listen for console input and send
@@ -53,6 +55,7 @@ def process_inputs(client_socket):
         except Exception as e:
             print(f"Error sending message: {e}")
             break
+    return
 
 if __name__ == "__main__":
     connect()
