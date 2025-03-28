@@ -28,6 +28,7 @@ def listen():
         thread = threading.Thread(target=message_listener_thread, args=(client_socket, addr))
         thread.start()
         print(f"Active Connections: {threading.active_count() - 1}")
+    return
 
 
 def message_listener_thread(client_socket, addr):
@@ -53,6 +54,7 @@ def message_listener_thread(client_socket, addr):
 
     clients.remove(client_socket)
     client_socket.close()
+    return
 
 def send_message(message, sender_socket):
     # loop through all clients
@@ -65,6 +67,7 @@ def send_message(message, sender_socket):
             except Exception as e:
                 print(f"Error sending message: {e}")
                 clients.remove(client)
+    return
 
 
 if __name__ == "__main__":
