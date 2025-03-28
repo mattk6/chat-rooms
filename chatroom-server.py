@@ -7,6 +7,7 @@ import threading
 
 # List to keep track of connected client sockets
 clients = []
+groups = {}
 
 def listen():
     server_name = '10.0.16.1'
