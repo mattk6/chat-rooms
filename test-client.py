@@ -1,9 +1,17 @@
 import socket
 import threading
 
-# TODO: Use threading for the input listener
+def get_room_pin():
+    while True:
+        pin = input("Please select frequency: ")
+        if pin.isdigit() and len(pin) == 4:
+            return pin
+        print("Invalid input. Please enter a 4-digit pin.")
 
 def connect():
+    # Get room pin before connecting
+    room_pin = get_room_pin()
+    
     server_name = '10.0.16.1'
     server_port = 10164
 
@@ -11,6 +19,8 @@ def connect():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         client_socket.connect((server_name, server_port))
+        # Send room pin to server
+        client_socket.send(room_pin.encode('utf-8'))
     except Exception as e:
         print(f"Connection failed reaching {server_name}:{server_port} \n {e}")
         return

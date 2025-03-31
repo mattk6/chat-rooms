@@ -8,6 +8,8 @@ import threading
 # List to keep track of connected client sockets
 clients = []
 groups = {}
+# Dictionary to track which room pin each client selected
+client_pins = {}
 
 def listen():
     server_name = '10.0.16.1'
@@ -34,6 +36,15 @@ def listen():
 def message_listener_thread(client_socket, addr):
     # listen for messages on client socket
     print(f"Client: {addr} connected.")
+    
+    try:
+        # First message from client should be the room pin
+        room_pin = client_socket.recv(1024).decode('utf-8')
+        client_pins[client_socket] = room_pin
+        print(f"Client {addr} selected frequency: {room_pin}")
+    except Exception as e:
+        print(f"Error receiving room pin from {addr}: {e}")
+    
     while True:
         try:
             # receive message from client
@@ -52,6 +63,9 @@ def message_listener_thread(client_socket, addr):
 
     print(f"Client: {addr} disconnected.")
 
+    # Remove client from dictionaries and lists
+    if client_socket in client_pins:
+        del client_pins[client_socket]
     clients.remove(client_socket)
     client_socket.close()
     return
@@ -59,7 +73,6 @@ def message_listener_thread(client_socket, addr):
 def send_message(message, sender_socket):
     # loop through all clients
     for client in clients:
-
         # send to everyone but skip the message sender
         if client != sender_socket:
             try:
