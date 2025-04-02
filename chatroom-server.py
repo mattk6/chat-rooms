@@ -1,5 +1,6 @@
 import socket
 import threading
+import sqlite3
 
 # TODO:  Build "group chats" so that users can send and receive to a group of users.
 #  Allow for non-text messages, such as file attachments.
@@ -40,7 +41,7 @@ def message_listener_thread(client_socket, addr):
     try:
         # First message from client should be the room pin
         room_pin = client_socket.recv(1024).decode('utf-8')
-        client_pins[client_socket] = room_pin
+        client_pins[room] = room_pin
         print(f"Client {addr} selected frequency: {room_pin}")
     except Exception as e:
         print(f"Error receiving room pin from {addr}: {e}")
