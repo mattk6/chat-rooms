@@ -1,6 +1,7 @@
 import socket
 import threading
 
+
 def get_room_pin():
     while True:
         pin = input("Please select frequency: ")
@@ -32,8 +33,7 @@ def connect():
     receive_thread.daemon = True
     receive_thread.start()
 
-    # Start thread to send messages to the server (or run in main thread)
-    # do we need this?
+    # use main thread to send messages to the server
     process_inputs(client_socket)
     return
 
@@ -51,21 +51,35 @@ def receive_messages(client_socket):
             break
     return
 
-def process_inputs(client_socket):
-    # continuously listen for console input and send
-    while True:
-        message = input("")
 
-        # close socket(s) on the server side upon user 'quit'
-        if message.lower() == 'quit':
+def process_inputs(client_socket):
+    # continuously read user input and send to server on return key press
+    while True:
+        user_input = input("")
+
+        # Disconnect if the user types 'quit'
+        if user_input.lower() == "quit":
             client_socket.close()
+            print("You have left the chat.")
             break
+
+        # Handle room switching with "switch:<room_pin>"
+        if user_input.startswith("switch:"):
+            try:
+                client_socket.send(user_input.encode('utf-8'))
+                new_room_pin = user_input[7:].strip()  
+                print(f"Switched to room {new_room_pin}.")
+            except Exception as e:
+                print(f"Error switching rooms: {e}")
+            continue
+
+        # Send other messages as usual
         try:
-            client_socket.send(message.encode('utf-8'))
+            client_socket.send(user_input.encode('utf-8'))
         except Exception as e:
             print(f"Error sending message: {e}")
             break
-    return
+
 
 if __name__ == "__main__":
     connect()

@@ -8,13 +8,6 @@ def init_db():
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
 
-        # Create a table for chat rooms
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS chat_rooms (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                room_pin TEXT UNIQUE NOT NULL
-            )
-        """)
 
         # Create a table for messages
         cursor.execute("""
@@ -22,8 +15,7 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 room_pin TEXT NOT NULL,
                 message TEXT NOT NULL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY(room_pin) REFERENCES chat_rooms(room_pin)
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """)
 
